@@ -1,3 +1,10 @@
+# 
+# This script extracts ET, TS EL E0 from many outputs and prints out:
+# V vs F @ each Temperature.
+# These files are needed for the last step of the QHA methodology,
+# where we need tables of F vs V 
+# in order to then compute P=dF/dV and then G(P,T)
+
 import re
 import os
 import glob
