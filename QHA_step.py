@@ -12,6 +12,9 @@ from itertools import islice
 import numpy as np
 import sys
 
+import subprocess
+os.system("rm -Rf F_vs_V_*")
+
 n_volume = []
 path='./'
 template = os.path.join(path, '*.out')
@@ -106,107 +109,43 @@ E0 = E0/n_F_u
 ET = ET/n_F_u
 TS = TS/n_F_u
 
-print 'VOLUME_EACH = ', VOLUME_EACH
-print 'len(VOLUME_EACH) =  ' , len(VOLUME_EACH)
+output_array = np.vstack((VOLUME_EACH, EL)).T
+np.savetxt('EL_vs_V.dat', output_array, header="Volume           EL", fmt="%0.13f")
 
-print 'EL = ', EL
-print 'len(EL) =  ' , len(EL)
+EL_plus_E0 = EL + E0
 
-print 'E0 = ', E0
-print 'len(E0) =  ' , len(E0)
-
-print 'T = ', T
-print 'len(T) =  ' , len(T)
-
-print 'ET = ', ET
-print 'len(ET) =  ' , len(ET)
-
-print 'TS = ', TS
-print 'len(TS) =  ' , len(TS)
-
-#T_chosen = [10.00, 30.10, 70.30]
-
-#ITEMS = []
-#for t in T_chosen:
-#  itemindex = np.argwhere(T==t)
-## itemindex = np.where(T==t)
-#  print itemindex
-#  print type(itemindex)
-#  itemindex = int(itemindex)
-#  ITEMS.append(itemindex)
-#print ITEMS
-
-#for  i in ITEMS:
-#    print ET[i]
-
-#n_T = 4
-#n_V = 2
-#T = T[:n_T]
-
-print 'ET.shape = ', ET.shape 
+output_array = np.vstack((VOLUME_EACH, EL_plus_E0)).T
+np.savetxt('EL_plus_E0_vs_V.dat', output_array, header="Volume           EL+E0", fmt="%0.13f")
 
 n_volume = len(VOLUME_EACH)
-print 'n_volume = ', n_volume
 
 n_T = len(T) / n_volume
-print 'n_T = ', n_T
 
 ET = np.reshape(ET, (n_volume, n_T))
 TS = np.reshape(TS, (n_volume, n_T))
 T  = np.reshape(T, (n_volume, n_T))
 
-print 'ET reshaped = ', ET.shape 
-
-print 'ET reduced = ', ET
-print 'TS reduced = ', TS
-print 'T reduced = ', T
-
 rows = ET.shape[0]
 cols = ET.shape[1]
-
-print 'rows = ', rows
-print 'cols = ', cols
 
 rows = ET.shape[0]
 cols = ET.shape[1]
 
 F_all = []
 for x, indx_EL, indx_E0 in zip(range(0, rows), range(len(EL)), range(len(E0))):
-    print 'EL[indx_EL] =  ', EL[indx_EL]
-    print 'E0[indx_E0] =  ', E0[indx_E0]
-    print 'ET[x] =  ', ET[x]
-    print 'TS[x] =  ', TS[x]
     aux = []    
     for y in range(0, cols):
         F = EL[indx_EL] + E0[indx_E0] + ET[x,y] - TS[x,y]
-        print F
         aux.append(F)
     F_all.append(aux)
-
-print ' F_all = ', F_all
-print ' T = ', T
-print ' VOLUME_EACH = ', VOLUME_EACH
-
-for i in F_all:
- print F_all
 
 # Transform to a np.array:
 F_all = np.array(F_all)
 
-print ' F_all = ', F_all
-for i in F_all:
- print type(F_all)
-
-print ' F_all[:,0] = ', F_all[:, 0]
-print ' F_all[:,1] = ', F_all[:, 1]
-
 cols_T = T.shape[1]
 rows_T = T.shape[0]
 
-print 'cols_T = ', cols_T
-print 'rows = ', rows
-print 'coles = ', cols
-
+import shutil
 F_all_each_V_at_cte_T = []
 for indx, t  in zip(range(0, cols), range(0, cols_T) ):
    aux_T = T[:,t] 
@@ -216,5 +155,25 @@ for indx, t  in zip(range(0, cols), range(0, cols_T) ):
 
    output_array = np.vstack((VOLUME_EACH, aux_F)).T
    np.savetxt('F_vs_V_%0.2fK.dat'  %aux_T[0], output_array, header="Volume           F at %0.2fK" %aux_T[0], fmt="%0.13f")
+   os.makedirs('F_vs_V_%0.2fK' %aux_T[0])
+   shutil.move("./F_vs_V_%0.2fK.dat" %aux_T[0], "./F_vs_V_%0.2fK" %aux_T[0])
+
+#for t in range(0, cols_T):
+#   aux_T = T[:,t]
+#   os.makedirs('F_vs_V_%0.2fK' %aux_T[0])
+   
+os.system('rm -Rf EL_vs_V')
+os.system('mkdir EL_vs_V')
+os.system('mv EL_vs_V.dat  ./EL_vs_V')
+
+os.system('rm -Rf EL_plus_E0_vs_V')
+os.system('mkdir EL_plus_E0_vs_V')
+os.system('mv EL_plus_E0_vs_V.dat  ./EL_plus_E0_vs_V')
+
+os.system('rm -Rf G_PT')
+os.system('mkdir G_PT')
+os.system('mv  F_vs_V_* ./G_PT')
+
+#os.system('mv InTerSect_EL_level.py ./EL_vs_V')
 
 
