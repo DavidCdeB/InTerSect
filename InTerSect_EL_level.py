@@ -37,19 +37,21 @@ def H(x, a, b, c, d):
      return  a + b*x + c*x**2 + d*x**3
 
 
-filefolder_Calcite_I_SG_167 = '/home/david/Trabajo/structures/Calcite_I_and_II/PBE-D3__SHRINK_8_8__bipolar_18_18__TOLINTEG_8_18__XXLGRID_TOLDEE_8/DEFINITIVE_ALL_QUANTITITES_FROM_SCELPHONO_OUTPUT/RAW_DATA_for_QHA/Calcite_II_SG_14/preparation/to_post/to_post_2/implementation_check_final_F_files/Application_to_all_calcite_II_SG_14/Result_of_QHA_step_script/Calcite_I_SG_167/EL_vs_V'
+filefolder_Calcite_I_SG_167 = '/home/david/Trabajo/structures/Calcite_I_and_II/PBE-D3__SHRINK_8_8__bipolar_18_18__TOLINTEG_8_18__XXLGRID_TOLDEE_8/DEFINITIVE_ALL_QUANTITITES_FROM_SCELPHONO_OUTPUT/RAW_DATA_for_QHA/Calcite_II_SG_14/preparation/to_post/to_post_2/implementation_check_final_F_files/Application_to_all_calcite_II_SG_14/Result_of_QHA_step_script/Calcite_I_SG_167'
 
-filefolder_Calcite_II_SG_14 = '/home/david/Trabajo/structures/Calcite_I_and_II/PBE-D3__SHRINK_8_8__bipolar_18_18__TOLINTEG_8_18__XXLGRID_TOLDEE_8/DEFINITIVE_ALL_QUANTITITES_FROM_SCELPHONO_OUTPUT/RAW_DATA_for_QHA/Calcite_II_SG_14/preparation/to_post/to_post_2/implementation_check_final_F_files/Application_to_all_calcite_II_SG_14/Result_of_QHA_step_script/Calcite_II_SG_14/EL_vs_V'
+filefolder_Calcite_II_SG_14 = '/home/david/Trabajo/structures/Calcite_I_and_II/PBE-D3__SHRINK_8_8__bipolar_18_18__TOLINTEG_8_18__XXLGRID_TOLDEE_8/DEFINITIVE_ALL_QUANTITITES_FROM_SCELPHONO_OUTPUT/RAW_DATA_for_QHA/Calcite_II_SG_14/preparation/to_post/to_post_2/implementation_check_final_F_files/Application_to_all_calcite_II_SG_14/Result_of_QHA_step_script/Calcite_II_SG_14'
 
-filefolder_Calcite_I_son_SG_161 = '/home/david/Trabajo/structures/Calcite_I_and_II/PBE-D3__SHRINK_8_8__bipolar_18_18__TOLINTEG_8_18__XXLGRID_TOLDEE_8/DEFINITIVE_ALL_QUANTITITES_FROM_SCELPHONO_OUTPUT/RAW_DATA_for_QHA/Calcite_II_SG_14/preparation/to_post/to_post_2/implementation_check_final_F_files/Application_to_all_calcite_II_SG_14/Result_of_QHA_step_script/Calcite_I_son_SG_161/EL_vs_V'
+filefolder_Calcite_I_son_SG_161 = '/home/david/Trabajo/structures/Calcite_I_and_II/PBE-D3__SHRINK_8_8__bipolar_18_18__TOLINTEG_8_18__XXLGRID_TOLDEE_8/DEFINITIVE_ALL_QUANTITITES_FROM_SCELPHONO_OUTPUT/RAW_DATA_for_QHA/Calcite_II_SG_14/preparation/to_post/to_post_2/implementation_check_final_F_files/Application_to_all_calcite_II_SG_14/Result_of_QHA_step_script/Calcite_I_son_SG_161'
+
+filefolder_energetics = 'EL_vs_V'
 
 # Calcite I (Red triangles): 
-V_C_I, E_C_I = np.loadtxt(os.path.join(filefolder_Calcite_I_SG_167, './EL_vs_V.dat'), skiprows = 1).T
+V_C_I, E_C_I = np.loadtxt(os.path.join(filefolder_Calcite_I_SG_167, filefolder_energetics, './EL_vs_V.dat'), skiprows = 1).T
 
 # 14 (Empty grey triangles):
-V_14, E_14 = np.loadtxt(os.path.join(filefolder_Calcite_II_SG_14, './EL_vs_V.dat'), skiprows = 1).T
+V_14, E_14 = np.loadtxt(os.path.join(filefolder_Calcite_II_SG_14, filefolder_energetics, './EL_vs_V.dat'), skiprows = 1).T
 
-V_161, E_161 = np.loadtxt(os.path.join(filefolder_Calcite_I_son_SG_161, './EL_vs_V.dat'), skiprows = 1).T
+V_161, E_161 = np.loadtxt(os.path.join(filefolder_Calcite_I_son_SG_161, filefolder_energetics, './EL_vs_V.dat'), skiprows = 1).T
 
 init_vals = [E0_init, V0_init, B0_init, B0_prime_init]
 
@@ -332,25 +334,18 @@ def z_II(P):
 sol = sym.solve(z_I(P) - z_II(P) , P)
 print 'sol_ H_I(P) - H_II(P)  =', sol
 
+# Transform to complex notation, in order to
+# better discard the complex root afterwards.
 # Use of evalf to obtain better precision:
-evalf_result = [x.evalf() for x in sol]
-print '[x.evalf() for x in sol] = ', evalf_result
 
-# Now, let's grab the real part of the evalf_result:
-real_roots = []
-for x in evalf_result:
-  each_real_root = re(x)
-  real_roots.append(each_real_root)
+evalf_result_c = [complex(x.evalf()) for x in sol]
+print 'evalf_result_c = ', evalf_result_c
 
+filtered = [i for i in evalf_result_c if i.imag == 0]
+print 'filtered = ', filtered
+
+real_roots = [i.real for i in filtered]
 print 'real_roots = ', real_roots
-for i in real_roots:
- print type(i)
-
-# Transform each element of the list from <sympy.core.numbers.Float> to <float64>:
-real_roots = [float(i) for i in real_roots]
-
-for i in real_roots:
- print type(i)
 
 # Transform each element of the list to a numpy array:
 real_roots = np.array(real_roots)
@@ -358,7 +353,7 @@ real_roots = np.array(real_roots)
 for i in real_roots:
  print type(i)
 
-print real_roots
+print 'real_roots = ', real_roots
 
 # Let's grab the root located between 0.1GPa and 4GPa (true for CI-CII phase trans.)
 real_roots_zero_to_four = real_roots[(real_roots >= 0.1) & (real_roots <= 4.0)]
@@ -366,7 +361,6 @@ print 'real_roots_zero_to_four = ', real_roots_zero_to_four
 
 P_real_intersection = real_roots_zero_to_four[0]
 H_real_intersection = z_I(real_roots_zero_to_four[0])
-
 
 plt.xlabel(r'$P$ (GPa)', fontsize=20)
 plt.ylabel(r'$(H = E + PV)$ / F.U. (a.u.)', fontsize=15)
