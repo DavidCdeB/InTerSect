@@ -11,8 +11,9 @@ import glob
 from itertools import islice
 import numpy as np
 import sys
-
+import shutil
 import subprocess
+
 os.system("rm -Rf F_vs_V_*")
 
 n_volume = []
@@ -111,11 +112,13 @@ TS = TS/n_F_u
 
 output_array = np.vstack((VOLUME_EACH, EL)).T
 np.savetxt('EL_vs_V.dat', output_array, header="Volume           EL", fmt="%0.13f")
+os.system("sort -k1 -n EL_vs_V.dat -o EL_vs_V.dat")
 
 EL_plus_E0 = EL + E0
 
 output_array = np.vstack((VOLUME_EACH, EL_plus_E0)).T
 np.savetxt('EL_plus_E0_vs_V.dat', output_array, header="Volume           EL+E0", fmt="%0.13f")
+os.system("sort -k1 -n EL_plus_E0_vs_V.dat -o EL_plus_E0_vs_V.dat")
 
 n_volume = len(VOLUME_EACH)
 
@@ -145,7 +148,6 @@ F_all = np.array(F_all)
 cols_T = T.shape[1]
 rows_T = T.shape[0]
 
-import shutil
 F_all_each_V_at_cte_T = []
 for indx, t  in zip(range(0, cols), range(0, cols_T) ):
    aux_T = T[:,t] 
@@ -154,7 +156,9 @@ for indx, t  in zip(range(0, cols), range(0, cols_T) ):
    print ' aux_T[0] = ', aux_T[0]
 
    output_array = np.vstack((VOLUME_EACH, aux_F)).T
-   np.savetxt('F_vs_V_%0.2fK.dat'  %aux_T[0], output_array, header="Volume           F at %0.2fK" %aux_T[0], fmt="%0.13f")
+   print 'shape(output_array) =', output_array.shape
+   output_array_sorted_on_V = output_array[output_array[:,0].argsort()]
+   np.savetxt('F_vs_V_%0.2fK.dat'  %aux_T[0], output_array_sorted_on_V, header="Volume           F at %0.2fK" %aux_T[0], fmt="%0.13f")
    os.makedirs('F_vs_V_%0.2fK' %aux_T[0])
    shutil.move("./F_vs_V_%0.2fK.dat" %aux_T[0], "./F_vs_V_%0.2fK" %aux_T[0])
 
