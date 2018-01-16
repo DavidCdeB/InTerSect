@@ -37,19 +37,19 @@ def H(x, a, b, c, d):
      return  a + b*x + c*x**2 + d*x**3
 
 
-filefolder_Calcite_I_SG_167 = '/home/david/Trabajo/structures/Calcite_I_and_II/PBE-D3__SHRINK_8_8__bipolar_18_18__TOLINTEG_8_18__XXLGRID_TOLDEE_8/DEFINITIVE_ALL_QUANTITITES_FROM_SCELPHONO_OUTPUT/RAW_DATA_for_QHA/Calcite_II_SG_14/preparation/to_post/to_post_2/implementation_check_final_F_files/Application_to_all_calcite_II_SG_14/Result_of_QHA_step_script/Calcite_I_SG_167/EL_vs_V'
+filefolder_Calcite_I_SG_167 = '/home/david/Trabajo/structures/Calcite_I_and_II/PBE-D3__SHRINK_8_8__bipolar_18_18__TOLINTEG_8_18__XXLGRID_TOLDEE_8/DEFINITIVE_ALL_QUANTITITES_FROM_SCELPHONO_OUTPUT/RAW_DATA_for_QHA/Calcite_II_SG_14/preparation/to_post/to_post_2/implementation_check_final_F_files/Application_to_all_calcite_II_SG_14/Result_of_QHA_step_script/Calcite_I_SG_167/EL_plus_E0_vs_V'
 
-filefolder_Calcite_II_SG_14 = '/home/david/Trabajo/structures/Calcite_I_and_II/PBE-D3__SHRINK_8_8__bipolar_18_18__TOLINTEG_8_18__XXLGRID_TOLDEE_8/DEFINITIVE_ALL_QUANTITITES_FROM_SCELPHONO_OUTPUT/RAW_DATA_for_QHA/Calcite_II_SG_14/preparation/to_post/to_post_2/implementation_check_final_F_files/Application_to_all_calcite_II_SG_14/Result_of_QHA_step_script/Calcite_II_SG_14/EL_vs_V'
+filefolder_Calcite_II_SG_14 = '/home/david/Trabajo/structures/Calcite_I_and_II/PBE-D3__SHRINK_8_8__bipolar_18_18__TOLINTEG_8_18__XXLGRID_TOLDEE_8/DEFINITIVE_ALL_QUANTITITES_FROM_SCELPHONO_OUTPUT/RAW_DATA_for_QHA/Calcite_II_SG_14/preparation/to_post/to_post_2/implementation_check_final_F_files/Application_to_all_calcite_II_SG_14/Result_of_QHA_step_script/Calcite_II_SG_14/EL_plus_E0_vs_V'
 
-filefolder_Calcite_I_son_SG_161 = '/home/david/Trabajo/structures/Calcite_I_and_II/PBE-D3__SHRINK_8_8__bipolar_18_18__TOLINTEG_8_18__XXLGRID_TOLDEE_8/DEFINITIVE_ALL_QUANTITITES_FROM_SCELPHONO_OUTPUT/RAW_DATA_for_QHA/Calcite_II_SG_14/preparation/to_post/to_post_2/implementation_check_final_F_files/Application_to_all_calcite_II_SG_14/Result_of_QHA_step_script/Calcite_I_son_SG_161/EL_vs_V'
+filefolder_Calcite_I_son_SG_161 = '/home/david/Trabajo/structures/Calcite_I_and_II/PBE-D3__SHRINK_8_8__bipolar_18_18__TOLINTEG_8_18__XXLGRID_TOLDEE_8/DEFINITIVE_ALL_QUANTITITES_FROM_SCELPHONO_OUTPUT/RAW_DATA_for_QHA/Calcite_II_SG_14/preparation/to_post/to_post_2/implementation_check_final_F_files/Application_to_all_calcite_II_SG_14/Result_of_QHA_step_script/Calcite_I_son_SG_161/EL_plus_E0_vs_V'
 
 # Calcite I (Red triangles): 
-V_C_I, E_C_I = np.loadtxt(os.path.join(filefolder_Calcite_I_SG_167, './EL_vs_V.dat'), skiprows = 1).T
+V_C_I, E_C_I = np.loadtxt(os.path.join(filefolder_Calcite_I_SG_167, './EL_plus_E0_vs_V.dat'), skiprows = 1).T
 
 # 14 (Empty grey triangles):
-V_14, E_14 = np.loadtxt(os.path.join(filefolder_Calcite_II_SG_14, './EL_vs_V.dat'), skiprows = 1).T
+V_14, E_14 = np.loadtxt(os.path.join(filefolder_Calcite_II_SG_14, './EL_plus_E0_vs_V.dat'), skiprows = 1).T
 
-V_161, E_161 = np.loadtxt(os.path.join(filefolder_Calcite_I_son_SG_161, './EL_vs_V.dat'), skiprows = 1).T
+V_161, E_161 = np.loadtxt(os.path.join(filefolder_Calcite_I_son_SG_161, './EL_plus_E0_vs_V.dat'), skiprows = 1).T
 
 init_vals = [E0_init, V0_init, B0_init, B0_prime_init]
 
@@ -137,7 +137,7 @@ fontP.set_size('15')
 plt.legend((p1, p2), ("Calcite I", "Cubic fit Calcite I"), prop=fontP)
 
 plt.xlabel('V / F.U. (Angstrom$^{3}$)', fontsize=20)
-plt.ylabel(r'$E$ / F.U. (a.u.)', fontsize=20)
+plt.ylabel(r'$(E + E_{ZP})$ / F.U. (a.u.)', fontsize=20)
 plt.suptitle("PBE-D3, pob-TZVP, SHRINK 8 8, Bipolar 18 18, TOLINTEG 8 18, XXLGRID, TOLDEE 8")
 plt.title("(0.87 - 1.08)$V_{eq}$, 60 volumes", fontsize=10)
 plt.ticklabel_format(useOffset=False)
@@ -168,7 +168,7 @@ plt.legend((p1, p2, p5, p6, p8, p161), ("Calcite I", "Cubic fit Calcite I", "Cal
 
 
 plt.xlabel('V / F.U. (Angstrom$^{3}$)', fontsize=20)
-plt.ylabel(r'$P = -\frac{\partial E }{\partial V}$ (GPa)', fontsize=20)
+plt.ylabel(r'$P = -\frac{\partial (E + E_{ZP})}{\partial V}$ (GPa)', fontsize=20)
 plt.suptitle("PBE-D3, pob-TZVP, SHRINK 8 8, Bipolar 18 18, TOLINTEG 8 18, XXLGRID, TOLDEE 8")
 plt.title("(0.87 - 1.08)$V_{eq}$, 60 volumes", fontsize=10)
 plt.ticklabel_format(useOffset=False)
@@ -369,7 +369,7 @@ H_real_intersection = z_I(real_roots_zero_to_four[0])
 
 
 plt.xlabel(r'$P$ (GPa)', fontsize=20)
-plt.ylabel(r'$(H = E + PV)$ / F.U. (a.u.)', fontsize=15)
+plt.ylabel(r'$(H = E + E_{ZP} + PV)$ / F.U. (a.u.)', fontsize=15)
 plt.suptitle("PBE-D3, pob-TZVP, SHRINK 8 8, Bipolar 18 18, TOLINTEG 8 18, XXLGRID, TOLDEE 8")
 plt.title("(0.87 - 1.08)$V_{eq}$, 60 volumes.", fontsize=10)
 plt.ticklabel_format(useOffset=False)
