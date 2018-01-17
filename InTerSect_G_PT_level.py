@@ -37,21 +37,21 @@ def H(x, a, b, c, d):
      return  a + b*x + c*x**2 + d*x**3
 
 
-filefolder_Calcite_I_SG_167 = '/home/david/Trabajo/structures/Calcite_I_and_II/PBE-D3__SHRINK_8_8__bipolar_18_18__TOLINTEG_8_18__XXLGRID_TOLDEE_8/DEFINITIVE_ALL_QUANTITITES_FROM_SCELPHONO_OUTPUT/RAW_DATA_for_QHA/Calcite_II_SG_14/preparation/to_post/to_post_2/implementation_check_final_F_files/Application_to_all_calcite_II_SG_14/Result_of_QHA_step_script/Calcite_I_SG_167'
+filefolder_Calcite_I_SG_167 = '/home/david/Trabajo/structures/Calcite_I_and_II/PBE-D3__SHRINK_8_8__bipolar_18_18__TOLINTEG_8_18__XXLGRID_TOLDEE_8/DEFINITIVE_ALL_QUANTITITES_FROM_SCELPHONO_OUTPUT/RAW_DATA_for_QHA/Calcite_II_SG_14/preparation/to_post/to_post_2/implementation_check_final_F_files/Application_to_all_calcite_II_SG_14/Result_of_QHA_step_script/Calcite_I_SG_167/G_PT'
 
-filefolder_Calcite_II_SG_14 = '/home/david/Trabajo/structures/Calcite_I_and_II/PBE-D3__SHRINK_8_8__bipolar_18_18__TOLINTEG_8_18__XXLGRID_TOLDEE_8/DEFINITIVE_ALL_QUANTITITES_FROM_SCELPHONO_OUTPUT/RAW_DATA_for_QHA/Calcite_II_SG_14/preparation/to_post/to_post_2/implementation_check_final_F_files/Application_to_all_calcite_II_SG_14/Result_of_QHA_step_script/Calcite_II_SG_14'
+filefolder_Calcite_II_SG_14 = '/home/david/Trabajo/structures/Calcite_I_and_II/PBE-D3__SHRINK_8_8__bipolar_18_18__TOLINTEG_8_18__XXLGRID_TOLDEE_8/DEFINITIVE_ALL_QUANTITITES_FROM_SCELPHONO_OUTPUT/RAW_DATA_for_QHA/Calcite_II_SG_14/preparation/to_post/to_post_2/implementation_check_final_F_files/Application_to_all_calcite_II_SG_14/Result_of_QHA_step_script/Calcite_II_SG_14/G_PT'
 
-filefolder_Calcite_I_son_SG_161 = '/home/david/Trabajo/structures/Calcite_I_and_II/PBE-D3__SHRINK_8_8__bipolar_18_18__TOLINTEG_8_18__XXLGRID_TOLDEE_8/DEFINITIVE_ALL_QUANTITITES_FROM_SCELPHONO_OUTPUT/RAW_DATA_for_QHA/Calcite_II_SG_14/preparation/to_post/to_post_2/implementation_check_final_F_files/Application_to_all_calcite_II_SG_14/Result_of_QHA_step_script/Calcite_I_son_SG_161'
+filefolder_Calcite_I_son_SG_161 = '/home/david/Trabajo/structures/Calcite_I_and_II/PBE-D3__SHRINK_8_8__bipolar_18_18__TOLINTEG_8_18__XXLGRID_TOLDEE_8/DEFINITIVE_ALL_QUANTITITES_FROM_SCELPHONO_OUTPUT/RAW_DATA_for_QHA/Calcite_II_SG_14/preparation/to_post/to_post_2/implementation_check_final_F_files/Application_to_all_calcite_II_SG_14/Result_of_QHA_step_script/Calcite_I_son_SG_161/G_PT'
 
-filefolder_energetics = 'EL_plus_E0_vs_V'
+filefolder_energetics = 'EL_vs_V'
 
 # Calcite I (Red triangles): 
-V_C_I, E_C_I = np.loadtxt(os.path.join(filefolder_Calcite_I_SG_167, filefolder_energetics, './EL_plus_E0_vs_V.dat'), skiprows = 1).T
+V_C_I, E_C_I = np.loadtxt(os.path.join(filefolder_Calcite_I_SG_167, filefolder_energetics, 'EL_vs_V.dat'), skiprows = 1).T
 
 # 14 (Empty grey triangles):
-V_14, E_14 = np.loadtxt(os.path.join(filefolder_Calcite_II_SG_14, filefolder_energetics, './EL_plus_E0_vs_V.dat'), skiprows = 1).T
+V_14, E_14 = np.loadtxt(os.path.join(filefolder_Calcite_II_SG_14, filefolder_energetics, 'EL_vs_V.dat'), skiprows = 1).T
 
-V_161, E_161 = np.loadtxt(os.path.join(filefolder_Calcite_I_son_SG_161, filefolder_energetics, './EL_plus_E0_vs_V.dat'), skiprows = 1).T
+V_161, E_161 = np.loadtxt(os.path.join(filefolder_Calcite_I_son_SG_161, filefolder_energetics, 'EL_vs_V.dat'), skiprows = 1).T
 
 init_vals = [E0_init, V0_init, B0_init, B0_prime_init]
 
@@ -117,10 +117,22 @@ pressures_per_F_unit_161 = P(V_161, V0_161, B0_161, B0_prime_161)
 output_array_3 = np.vstack((E_161, V_161, pressures_per_F_unit_161)).T
 np.savetxt('Volumes_and_pressures_161.dat', output_array_3, header="Energy / FU (a.u.) \t Volume / FU (A^3) \t Pressures (GPa)", fmt="%0.13f")
 
+# obtain the Temperature we are working at:
+import subprocess
+T = subprocess.check_output("basename `pwd`", shell=True)
+print 'T = ', T
+
+import string
+new_T = string.replace(T, '_', ' ')
+print 'new_T = ', new_T
+T = T.rstrip()
+new_T = new_T.rstrip()
+
+
 plt.xlabel('V / F.U. (Angstrom$^{3}$)', fontsize=20)
-plt.ylabel(r'$(E + E_{ZP})$ / F.U. (a.u.)', fontsize=20)
+plt.ylabel(r'$(F = E + E_{ZP} + ET - TS)$ / F.U. (a.u.)', fontsize=20)
 plt.suptitle("PBE-D3, pob-TZVP, SHRINK 8 8, Bipolar 18 18, TOLINTEG 8 18, XXLGRID, TOLDEE 8")
-plt.title("(0.87 - 1.08)$V_{eq}$, 60 volumes", fontsize=10)
+plt.title("(0.87 - 1.08)$V_{eq}$, 60 volumes. T = %s" %new_T, fontsize=10)
 plt.ticklabel_format(useOffset=False)
 
 plt.savefig('calcite_I_and_II_all_2_summary_better_plot.pdf', bbox_inches='tight')
@@ -139,9 +151,9 @@ fontP.set_size('15')
 plt.legend((p1, p2), ("Calcite I", "Cubic fit Calcite I"), prop=fontP)
 
 plt.xlabel('V / F.U. (Angstrom$^{3}$)', fontsize=20)
-plt.ylabel(r'$(E + E_{ZP})$ / F.U. (a.u.)', fontsize=20)
+plt.ylabel(r'$(F = E + E_{ZP} + ET - TS)$ / F.U. (a.u.)', fontsize=20)
 plt.suptitle("PBE-D3, pob-TZVP, SHRINK 8 8, Bipolar 18 18, TOLINTEG 8 18, XXLGRID, TOLDEE 8")
-plt.title("(0.87 - 1.08)$V_{eq}$, 60 volumes", fontsize=10)
+plt.title("(0.87 - 1.08)$V_{eq}$, 60 volumes. T = %s" %new_T, fontsize=10)
 plt.ticklabel_format(useOffset=False)
 plt.savefig('calcite_I_summary_better_plot.pdf', bbox_inches='tight')
 
@@ -170,9 +182,9 @@ plt.legend((p1, p2, p5, p6, p8, p161), ("Calcite I", "Cubic fit Calcite I", "Cal
 
 
 plt.xlabel('V / F.U. (Angstrom$^{3}$)', fontsize=20)
-plt.ylabel(r'$P = -\frac{\partial (E + E_{ZP})}{\partial V}$ (GPa)', fontsize=20)
+plt.ylabel(r'$P = -\frac{\partial (E + E_{ZP} + ET - TS)}{\partial V}$ (GPa)', fontsize=20)
 plt.suptitle("PBE-D3, pob-TZVP, SHRINK 8 8, Bipolar 18 18, TOLINTEG 8 18, XXLGRID, TOLDEE 8")
-plt.title("(0.87 - 1.08)$V_{eq}$, 60 volumes", fontsize=10)
+plt.title("(0.87 - 1.08)$V_{eq}$, 60 volumes. T = %s" %new_T, fontsize=10) 
 plt.ticklabel_format(useOffset=False)
 
 plt.savefig('calcite_I_and_II_all_2_summary_better_plot_P_vs_V.pdf', bbox_inches='tight')
@@ -365,14 +377,24 @@ print 'real_roots_zero_to_four = ', real_roots_zero_to_four
 P_real_intersection = real_roots_zero_to_four[0]
 H_real_intersection = z_I(real_roots_zero_to_four[0])
 
-T_folder = 0.0
-output_array_2 = np.vstack((T_folder, P_real_intersection, H_real_intersection)).T
+print 'new_T = ', new_T
+
+T_folder = string.replace(new_T, ' ', '')
+print 'T_folder = ', T_folder
+T_folder = string.replace(new_T, 'K', '')
+print 'T_folder = ', T_folder
+
+T_folder_float = float(T_folder)
+#sys.exit()
+
+output_array_2 = np.vstack((T_folder_float, P_real_intersection, H_real_intersection)).T
 np.savetxt('P_H_real_intersection.dat', output_array_2, header="Temperature (K) \t Pressure_Intersection (GPa) \t H_Intersection = E + PV (a.u.)", fmt="%0.13f")
 
 plt.xlabel(r'$P$ (GPa)', fontsize=20)
-plt.ylabel(r'$(H = E + E_{ZP} + PV)$ / F.U. (a.u.)', fontsize=15)
-plt.suptitle("PBE-D3, pob-TZVP, SHRINK 8 8, Bipolar 18 18, TOLINTEG 8 18, XXLGRID, TOLDEE 8")
-plt.title("(0.87 - 1.08)$V_{eq}$, 60 volumes.", fontsize=10)
+plt.ylabel(r'$(G = E + E_{ZP} + ET - TS + PV)$ / F.U. (a.u.)', fontsize=15)
+plt.suptitle("PBE-D3, pob-TZVP, SHRINK 8 8, Bipolar 18 18, TOLINTEG 8 18, XXLGRID, TOLDEE 8\n")
+plt.title("\n(0.87 - 1.08)$V_{eq}$, 60 volumes. T = %s" %new_T, fontsize=10)
+#plt.title("\n(0.87 - 1.08)$V_{eq}$, 60 volumes. T = {0}".format(new_T), fontsize=10)
 plt.ticklabel_format(useOffset=False)
 ax = fig.add_subplot(111)
 ax.annotate('Analytic\nIntersection\nP= %g GPa\nG = %g a.u.' %(P_real_intersection, H_real_intersection), xy=(P_real_intersection, H_real_intersection), xytext=(P_real_intersection+2.5767, H_real_intersection-0.05), fontsize=15,
@@ -380,5 +402,5 @@ ax.annotate('Analytic\nIntersection\nP= %g GPa\nG = %g a.u.' %(P_real_intersecti
             )
 plt.savefig('calcite_I_and_II_all_2_summary_better_plot_delta_H_exact_expression_with_intersection.pdf', bbox_inches='tight')
 
-plt.show()
+#plt.show()
 

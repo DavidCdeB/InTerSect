@@ -118,7 +118,7 @@ output_array_3 = np.vstack((E_161, V_161, pressures_per_F_unit_161)).T
 np.savetxt('Volumes_and_pressures_161.dat', output_array_3, header="Energy / FU (a.u.) \t Volume / FU (A^3) \t Pressures (GPa)", fmt="%0.13f")
 
 plt.xlabel('V / F.U. (Angstrom$^{3}$)', fontsize=20)
-plt.ylabel(r'$(E + E_{ZP})$ / F.U. (a.u.)', fontsize=20)
+plt.ylabel(r'$E$ / F.U. (a.u.)', fontsize=20)
 plt.suptitle("PBE-D3, pob-TZVP, SHRINK 8 8, Bipolar 18 18, TOLINTEG 8 18, XXLGRID, TOLDEE 8")
 plt.title("(0.87 - 1.08)$V_{eq}$, 60 volumes", fontsize=10)
 plt.ticklabel_format(useOffset=False)
@@ -341,7 +341,10 @@ print 'sol_ H_I(P) - H_II(P)  =', sol
 evalf_result_c = [complex(x.evalf()) for x in sol]
 print 'evalf_result_c = ', evalf_result_c
 
-filtered = [i for i in evalf_result_c if i.imag < 1E-10]
+#filtered = [i for i in evalf_result_c if i.imag <= 0]
+#filtered = [i for i in evalf_result_c if not i.imag == 0]
+#filtered = [i for i in evalf_result_c if i.imag == 0] # works
+filtered = [i for i in evalf_result_c if i.imag <= 0 or i.imag >= 0] # works
 print 'filtered = ', filtered
 
 real_roots = [i.real for i in filtered]
@@ -362,7 +365,7 @@ print 'real_roots_zero_to_four = ', real_roots_zero_to_four
 P_real_intersection = real_roots_zero_to_four[0]
 H_real_intersection = z_I(real_roots_zero_to_four[0])
 
-T_folder = 0
+T_folder = 0.0
 output_array_2 = np.vstack((T_folder, P_real_intersection, H_real_intersection)).T
 np.savetxt('P_H_real_intersection.dat', output_array_2, header="Temperature (K) \t Pressure_Intersection (GPa) \t H_Intersection = E + PV (a.u.)", fmt="%0.13f")
 
@@ -377,5 +380,5 @@ ax.annotate('Analytic\nIntersection\nP= %g GPa\nG = %g a.u.' %(P_real_intersecti
             )
 plt.savefig('calcite_I_and_II_all_2_summary_better_plot_delta_H_exact_expression_with_intersection.pdf', bbox_inches='tight')
 
-#plt.show()
+plt.show()
 
