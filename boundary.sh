@@ -1,16 +1,14 @@
 #
 
+# Uncomment these the first time:
 #rm -Rf EL_level
 #mkdir EL_level
 #cp InTerSect_EL_level.py ./EL_level
 
-#rm -Rf EL_plus_E0_level
-#mkdir EL_plus_E0_level
-#cp InTerSect_EL_plus_E0_level.py ./EL_plus_E0_level
+rm -Rf EL_plus_E0_level
+mkdir EL_plus_E0_level
+cp InTerSect_EL_plus_E0_level.py ./EL_plus_E0_level
 
-#rm -Rf G_PT  /F_vs_V_10.00K
-#mkdir G_PT
-#cp InTerSect_G_PT_level.py ./G_PT
 ###########
 
 
